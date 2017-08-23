@@ -10,17 +10,17 @@ namespace MenuSolution
     {
         #region Properties
 
+        static int id = 1;
         static List<Video> videos = new List<Video>();
 
         #endregion
 
         private static void Main()
         {
+
             Video v = new Video();
 
             #region menuItems
-
-
             string[] menuItems =
             {
                 "Home",
@@ -53,16 +53,16 @@ namespace MenuSolution
                         break;
                     case 3:
                         WriteLine("Add Video");
-                        while (AddVideos() == true)
+                        while (AddVideos())
                         {
-                            AddVideos();
+                            WriteLine("Adding a new video...\n");
                         }
                         break;
                     case 4:
-                        WriteLine("Delete Video");
+                        DeleteVideo();
                         break;
                     case 5:
-                        WriteLine("Edit Video");
+                        EditVideo();
                         break;
                     default:
                         break;
@@ -81,7 +81,6 @@ namespace MenuSolution
 
 
         }
-
 
         #endregion
 
@@ -121,17 +120,40 @@ namespace MenuSolution
             WriteLine("\nList of Videos:\n");
             foreach (var video in videos)
             {
-                WriteLine($"{(videos.Count)}: {video.Title}");
+                WriteLine($"{(video.Id)}: {video.Title}");
             }
             WriteLine("\n");
         }
 
         #endregion
 
+        #region Find Video
+
+        private static Video FindVideoById()
+        {
+            WriteLine("Insert Video number: ");
+            int id;
+            while (!int.TryParse(ReadLine(), out id))
+            {
+                WriteLine("Please insert a number");
+            }
+
+            foreach (var video in videos)
+            {
+                if (video.Id == id)
+                {
+                    WriteLine(video.Title);
+                    return video;
+                }
+            }
+            return null;
+        }
+
+        #endregion //Find Video
 
         #region Add Videos
 
-        private static Boolean AddVideos()
+        private static bool AddVideos()
         {
             Write("Video Title: ");
             var title = ReadLine();
@@ -140,20 +162,23 @@ namespace MenuSolution
             {
                 videos.Add(new Video()
                 {
-                    Title = title
+                    Title = title,
+                    Id = id++
                 });
 
-                Write("\nDo you want to add another video? [Y/N]");
-                if (ReadLine() == "y")
-                {
-                    return true;
-                }
 
-                if (ReadLine() == "n")
-                {
-                    return false;
-                }
+                Write("\nDo you want to add another video? [Y], or press any key...");
+                //var input = ReadLine().ToLower();
+                //if (input == "y")
+                //{
+                //    return true;
+                //}
+                //else if (input == "n")
+                //{
 
+                //    return false;
+                //}
+                return ReadLine().ToLower() == "y";
             }
 
             return true;
@@ -161,6 +186,32 @@ namespace MenuSolution
 
         #endregion //Add Videos
 
+        #region Delete Videos
+
+
+        private static void DeleteVideo()
+        {
+            var videoFound = FindVideoById();
+            if (videoFound != null)
+            {
+                videos.Remove(videoFound);
+            }
+        }
+
+
+        #endregion //Delete Videos
+
+        #region Edit Video
+
+        private static void EditVideo()
+        {
+            var video = FindVideoById();
+
+            Write("\nVideo Title: ");
+            video.Title = ReadLine();
+        }
+
+        #endregion //Edit Video
 
     }
 }

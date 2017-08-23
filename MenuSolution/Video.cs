@@ -5,16 +5,12 @@ namespace MenuSolution
     {
         #region Properties
 
+        // Id of the video
+        public int Id { get; set; }
+
         // Name of the video
-        internal string Title { get; set; }
+        public string Title { get; set; }
 
         #endregion
-
-        public Video()
-        {
-
-        }
-
-
     }
 }
