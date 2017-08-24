@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using VideoMenuBLL;
 using VideoMenuEntity;
 using static System.Console;
 
 namespace VideoMenuUI
 {
-    public class Program
+    class Program
     {
+        static BLLFacade bllFacade = new BLLFacade();
 
-        #region Properties
-
-        static int id = 1;
-        static List<Video> videos = new List<Video>();
-
-        #endregion
 
         static void Main(string[] args)
         {
@@ -118,7 +114,7 @@ namespace VideoMenuUI
         private static void ListVideos()
         {
             WriteLine("\nList of Videos:\n");
-            foreach (var video in videos)
+            foreach (var video in bllFacade.GetVideoService().GetAll())
             {
                 WriteLine($"{(video.Id)}: {video.Title}");
             }
@@ -138,15 +134,8 @@ namespace VideoMenuUI
                 WriteLine("Please insert a number");
             }
 
-            foreach (var video in videos)
-            {
-                if (video.Id == id)
-                {
-                    WriteLine(video.Title);
-                    return video;
-                }
-            }
-            return null;
+
+            return bllFacade.GetVideoService().Get(id);
         }
 
         #endregion //Find Video
@@ -160,14 +149,14 @@ namespace VideoMenuUI
 
             if (!string.IsNullOrEmpty(title))
             {
-                videos.Add(new Video()
+                // Call BLL Facade to add video
+                bllFacade.GetVideoService().Create(new Video()
                 {
-                    Title = title,
-                    Id = id++
+                    Title = title
                 });
 
-
-                Write("\nDo you want to add another video? [Y], or press any key...");
+                Write("\nDo you want to Add another video? [Y], or press any key...");
+                /// <summary>Another possibility</summary>
                 //var input = ReadLine().ToLower();
                 //if (input == "y")
                 //{
@@ -178,13 +167,14 @@ namespace VideoMenuUI
 
                 //    return false;
                 //}
+                ///
                 return ReadLine().ToLower() == "y";
             }
 
             return true;
         }
-
         #endregion //Add Videos
+
 
         #region Delete Videos
 
@@ -192,10 +182,7 @@ namespace VideoMenuUI
         private static void DeleteVideo()
         {
             var videoFound = FindVideoById();
-            if (videoFound != null)
-            {
-                videos.Remove(videoFound);
-            }
+            bllFacade.GetVideoService().Delete(videoFound.Id);
         }
 
 

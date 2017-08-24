@@ -1,10 +1,13 @@
 ﻿using System;
+using VideoMenuBLL.Services;
+
 namespace VideoMenuBLL
 {
     public class BLLFacade
     {
-        public BLLFacade()
+        public IVideoService GetVideoService()
         {
+            return new VideoService();
         }
     }
 }
