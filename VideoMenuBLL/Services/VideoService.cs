@@ -9,50 +9,64 @@ namespace VideoMenuBLL.Services
 {
     class VideoService : IVideoService
     {
+        DALFacade facade;
+        public VideoService(DALFacade facade)
+        {
+            this.facade = facade;
+        }
+
         public Video Create(Video vid)
         {
-            #region Add Videos
-
-            Video newVid;
-
-            FakeDB.videos.Add(newVid = new Video()
+            using (var uow = facade.UnitOfWork)
             {
-                Title = vid.Title,
-                Id = FakeDB.Id++
-            });
-
-            return newVid;
-
-            #endregion //Add Videos
+                var newVid = uow.VideoRepository.Create(vid);
+                uow.Complete();
+                return newVid;
+            }
         }
 
         public Video Delete(int Id)
         {
-            var vid = Get(Id);
-            FakeDB.videos.Remove(vid);
-            return vid;
+            using (var uow = facade.UnitOfWork)
+            {
+                var newVid = uow.VideoRepository.Delete(Id);
+                uow.Complete();
+                return newVid;
+            }
         }
 
         public Video Get(int Id)
         {
-            return FakeDB.videos.FirstOrDefault(x => x.Id == Id);
+            using (var uow = facade.UnitOfWork)
+            {
+                return uow.VideoRepository.Get(Id);
+            }
+
         }
 
         public List<Video> GetAll()
         {
-            return new List<Video>(FakeDB.videos);
+            using (var uow = facade.UnitOfWork)
+            {
+                return uow.VideoRepository.GetAll();
+            }
         }
 
         public Video Update(Video vid)
         {
-            var videoFromDB = Get(vid.Id);
-            if (videoFromDB == null)
+            using (var uow = facade.UnitOfWork)
             {
-                throw new InvalidOperationException("Video not found");
+                var videoFromDB = uow.VideoRepository.Get(vid.Id);
+                if (videoFromDB == null)
+                {
+                    throw new InvalidOperationException("Video not found");
+                }
+                videoFromDB.Title = vid.Title;
+                videoFromDB.Id = vid.Id;
+                uow.Complete();
+                return videoFromDB;
             }
-            videoFromDB.Title = vid.Title;
-            videoFromDB.Id = vid.Id;
-            return videoFromDB;
+
         }
     }
 }

@@ -12,11 +12,26 @@ namespace VideoMenuUI
         static BLLFacade bllFacade = new BLLFacade();
 
 
-        static void Main(string[] args)
+        static void Main()
         {
             Video v = new Video();
 
-            #region menuItems
+
+            #region Hardcoded data for testing
+            bllFacade.VideoService.Create(new Video()
+            {
+                Title = "HangoBongo Returns"
+            });
+
+
+            bllFacade.VideoService.Create(new Video()
+            {
+                Title = "The incredible Kerv (Full movie, no fake)"
+            });
+            #endregion //Hardcoded data for testing
+
+
+            #region Menu Items
             string[] menuItems =
             {
                 "Home",
@@ -109,12 +124,12 @@ namespace VideoMenuUI
         }
         #endregion
 
-        #region List Videos
+        #region List all Videos
 
         private static void ListVideos()
         {
             WriteLine("\nList of Videos:\n");
-            foreach (var video in bllFacade.GetVideoService().GetAll())
+            foreach (var video in bllFacade.VideoService.GetAll())
             {
                 WriteLine($"{(video.Id)}: {video.Title}");
             }
@@ -123,7 +138,7 @@ namespace VideoMenuUI
 
         #endregion
 
-        #region Find Video
+        #region Find one Video
 
         private static Video FindVideoById()
         {
@@ -135,12 +150,12 @@ namespace VideoMenuUI
             }
 
 
-            return bllFacade.GetVideoService().Get(id);
+            return bllFacade.VideoService.Get(id);
         }
 
         #endregion //Find Video
 
-        #region Add Videos
+        #region CREATE
 
         private static bool AddVideos()
         {
@@ -150,11 +165,11 @@ namespace VideoMenuUI
             if (!string.IsNullOrEmpty(title))
             {
                 // Call BLL Facade to add video
-                bllFacade.GetVideoService().Create(new Video()
+                bllFacade.VideoService.Create(new Video()
                 {
                     Title = title
                 });
-
+                WriteLine("Video added!");
                 Write("\nDo you want to Add another video? [Y], or press any key...");
                 /// <summary>Another possibility</summary>
                 //var input = ReadLine().ToLower();
@@ -175,27 +190,41 @@ namespace VideoMenuUI
         }
         #endregion //Add Videos
 
-
-        #region Delete Videos
+        #region DELETE
 
 
         private static void DeleteVideo()
         {
             var videoFound = FindVideoById();
-            bllFacade.GetVideoService().Delete(videoFound.Id);
+
+            if (videoFound != null)
+            {
+                bllFacade.VideoService.Delete(videoFound.Id);
+            }
+            var response = videoFound == null ? "Video not found!" : "Video was deleted!";
+            WriteLine(response);
         }
 
 
         #endregion //Delete Videos
 
-        #region Edit Video
+        #region UPDATE
 
         private static void EditVideo()
         {
             var video = FindVideoById();
+            if (video != null)
+            {
+                Write("\nVideo Title: ");
+                video.Title = ReadLine();
+                WriteLine("Video has been updated!");
+                bllFacade.VideoService.Update(video);
+            }
+            else
+            {
+                WriteLine("Video not found!");
+            }
 
-            Write("\nVideo Title: ");
-            video.Title = ReadLine();
         }
 
         #endregion //Edit Video
