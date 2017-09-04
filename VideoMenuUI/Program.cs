@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using VideoMenuBLL;
-using VideoMenuEntity;
+using VideoMenuBLL.BusinessObjects;
 using static System.Console;
 
 namespace VideoMenuUI
@@ -14,17 +12,17 @@ namespace VideoMenuUI
 
         static void Main()
         {
-            Video v = new Video();
+            VideoBO v = new VideoBO();
 
 
             #region Hardcoded data for testing
-            bllFacade.VideoService.Create(new Video()
+            bllFacade.VideoService.Create(new VideoBO()
             {
                 Title = "HangoBongo Returns"
             });
 
 
-            bllFacade.VideoService.Create(new Video()
+            bllFacade.VideoService.Create(new VideoBO()
             {
                 Title = "The incredible Kerv (Full movie, no fake)"
             });
@@ -140,7 +138,7 @@ namespace VideoMenuUI
 
         #region Find one Video
 
-        private static Video FindVideoById()
+        private static VideoBO FindVideoById()
         {
             WriteLine("Insert Video number: ");
             int id;
@@ -165,7 +163,7 @@ namespace VideoMenuUI
             if (!string.IsNullOrEmpty(title))
             {
                 // Call BLL Facade to add video
-                bllFacade.VideoService.Create(new Video()
+                bllFacade.VideoService.Create(new VideoBO()
                 {
                     Title = title
                 });

@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using VideoMenuEntity;
+﻿using System.Collections.Generic;
+using VideoMenuDAL.Entities;
 
 namespace VideoMenuDAL
 {
@@ -12,7 +11,7 @@ namespace VideoMenuDAL
         List<Video> GetAll();
         Video Get(int Id);
         //U
-        // No Update here!
+        /// No Update here!
         //D
         Video Delete(int Id);
     }

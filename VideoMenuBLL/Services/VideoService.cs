@@ -1,58 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VideoMenuBLL.BusinessObjects;
+using VideoMenuBLL.Converters;
 using VideoMenuDAL;
-using VideoMenuEntity;
-using static System.Console;
+using VideoMenuDAL.Entities;
 
 namespace VideoMenuBLL.Services
 {
     class VideoService : IVideoService
     {
+        VideoConverter conv = new VideoConverter();
+
         DALFacade facade;
         public VideoService(DALFacade facade)
         {
             this.facade = facade;
         }
 
-        public Video Create(Video vid)
+        public VideoBO Create(VideoBO vid)
         {
             using (var uow = facade.UnitOfWork)
             {
-                var newVid = uow.VideoRepository.Create(vid);
+                var newVid = uow.VideoRepository.Create(conv.Convert(vid));
                 uow.Complete();
-                return newVid;
+                return conv.Convert(newVid);
             }
         }
 
-        public Video Delete(int Id)
+        public VideoBO Delete(int Id)
         {
             using (var uow = facade.UnitOfWork)
             {
                 var newVid = uow.VideoRepository.Delete(Id);
                 uow.Complete();
-                return newVid;
+                return conv.Convert(newVid);
             }
         }
 
-        public Video Get(int Id)
+        public VideoBO Get(int Id)
         {
             using (var uow = facade.UnitOfWork)
             {
-                return uow.VideoRepository.Get(Id);
+                return conv.Convert(uow.VideoRepository.Get(Id));
             }
 
         }
 
-        public List<Video> GetAll()
+        public List<VideoBO> GetAll()
         {
             using (var uow = facade.UnitOfWork)
             {
-                return uow.VideoRepository.GetAll();
+                //return uow.VideoRepository.GetAll();
+
+                return uow.VideoRepository.GetAll().Select(conv.Convert).ToList();
             }
         }
 
-        public Video Update(Video vid)
+        public VideoBO Update(VideoBO vid)
         {
             using (var uow = facade.UnitOfWork)
             {
@@ -64,9 +69,10 @@ namespace VideoMenuBLL.Services
                 videoFromDB.Title = vid.Title;
                 videoFromDB.Id = vid.Id;
                 uow.Complete();
-                return videoFromDB;
+                return conv.Convert(videoFromDB);
             }
 
         }
+
     }
 }

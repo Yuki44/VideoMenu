@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using VideoMenuEntity;
+using VideoMenuDAL.Entities;
 
 namespace VideoMenuDAL.Context
 {

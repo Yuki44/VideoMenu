@@ -1,5 +1,5 @@
 ﻿using System;
-namespace VideoMenuEntity
+namespace VideoMenuDAL.Entities
 {
     public class Video
     {
